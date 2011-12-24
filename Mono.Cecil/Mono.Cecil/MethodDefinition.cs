@@ -116,9 +116,10 @@ namespace Mono.Cecil {
 			get { return custom_attributes ?? (this.GetCustomAttributes (ref custom_attributes, Module)); }
 		}
 
-		public int RVA {
-			get { return (int) rva; }
-		}
+        public int RVA
+        {
+            get { return (int)rva; }
+        }
 
 		public bool HasBody {
 			get {

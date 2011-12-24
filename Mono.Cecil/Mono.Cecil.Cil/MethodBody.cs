@@ -41,6 +41,7 @@ namespace Mono.Cecil.Cil {
 		internal int code_size;
 		internal bool init_locals;
 		internal MetadataToken local_var_token;
+        internal UInt16 flags;
 
 		internal Collection<Instruction> instructions;
 		internal Collection<ExceptionHandler> exceptions;
@@ -50,6 +51,10 @@ namespace Mono.Cecil.Cil {
 		public MethodDefinition Method {
 			get { return method; }
 		}
+
+        public int LengthOnDisk { get; set; }
+        public UInt16 Flags { get { return flags; } }
+        public int IndexAfterCode { get; set; }
 
 		public int MaxStackSize {
 			get { return max_stack_size; }

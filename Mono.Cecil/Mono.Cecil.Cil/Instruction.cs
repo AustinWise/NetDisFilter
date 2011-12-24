@@ -42,6 +42,8 @@ namespace Mono.Cecil.Cil {
 
 		SequencePoint sequence_point;
 
+        public MetadataToken StringOperandToken { get; set; }
+
 		public int Offset {
 			get { return offset; }
 			set { offset = value; }

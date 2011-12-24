@@ -388,6 +388,11 @@ namespace NetDisFilter //_3DViewerControls.Data
             throw new Exception("Count not find section containing the RVA.");
         }
 
+        public long GetFileOffset(int rva)
+        {
+            return GetFileOffset((uint)rva);
+        }
+
         #endregion Public Methods
 
         #region Properties

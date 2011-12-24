@@ -86,11 +86,13 @@ namespace Mono.Cecil.Cil {
 		void ReadMethodBody ()
 		{
 			MoveTo (method.RVA);
+            var start = position;
 
 			var flags = ReadByte ();
 			switch (flags & 0x3) {
 			case 0x2: // tiny
 				body.code_size = flags >> 2;
+                body.flags = (UInt16)(flags & 0x3);
 				body.MaxStackSize = 8;
 				ReadCode ();
 				break;
@@ -102,6 +104,8 @@ namespace Mono.Cecil.Cil {
 				throw new InvalidOperationException ();
 			}
 
+            body.LengthOnDisk = position - start;
+
 			var symbol_reader = reader.module.SymbolReader;
 
 			if (symbol_reader != null) {
@@ -112,7 +116,7 @@ namespace Mono.Cecil.Cil {
 
 		void ReadFatMethod ()
 		{
-			var flags = ReadUInt16 ();
+			var flags = body.flags = ReadUInt16 ();
 			body.max_stack_size = ReadUInt16 ();
 			body.code_size = (int) ReadUInt32 ();
 			body.local_var_token = new MetadataToken (ReadUInt32 ());
@@ -157,6 +161,8 @@ namespace Mono.Cecil.Cil {
 
 				instructions.Add (current);
 			}
+
+            body.IndexAfterCode = position - (int)(method.RVA - code_section.VirtualAddress);
 
 			ResolveBranches (instructions);
 		}
@@ -207,12 +213,12 @@ namespace Mono.Cecil.Cil {
 			case OperandType.InlineSig:
 				return GetCallSite (ReadToken ());
 			case OperandType.InlineString:
-				return GetString (ReadToken ());
+                return GetString(instruction.StringOperandToken = ReadToken());
 			case OperandType.InlineTok:
 			case OperandType.InlineType:
 			case OperandType.InlineMethod:
 			case OperandType.InlineField:
-				return reader.LookupToken (ReadToken ());
+                return reader.LookupToken(ReadToken());
 			default:
 				throw new NotSupportedException ();
 			}

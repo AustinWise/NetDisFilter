@@ -21,9 +21,9 @@ namespace NetDisFilter
         public CorReader(PeHeaderReader pe)
         {
             var filePath = pe.FilePath;
-            using (var mm = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open))
+            using (var mm = MemoryMappedFile.CreateFromFile(filePath, FileMode.Open, Guid.NewGuid().ToString(), 0, MemoryMappedFileAccess.Read))
             {
-                using (var view = mm.CreateViewAccessor())
+                using (var view = mm.CreateViewAccessor(0, 0, MemoryMappedFileAccess.Read))
                 {
                     LoadHeaderAndStreams(pe, view);
                     LoadMetaTable(pe, view);
